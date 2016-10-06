@@ -28,21 +28,39 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.textBoxTitle = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
+            // 
+            // textBoxTitle
+            // 
+            this.textBoxTitle.Dock = System.Windows.Forms.DockStyle.Top;
+            this.textBoxTitle.Location = new System.Drawing.Point(0, 0);
+            this.textBoxTitle.Name = "textBoxTitle";
+            this.textBoxTitle.ReadOnly = true;
+            this.textBoxTitle.Size = new System.Drawing.Size(292, 29);
+            this.textBoxTitle.TabIndex = 0;
+            this.textBoxTitle.TabStop = false;
+            this.textBoxTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBoxTitle.WordWrap = false;
             // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(292, 272);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.Controls.Add(this.textBoxTitle);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "MainForm";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
+
+        private System.Windows.Forms.TextBox textBoxTitle;
 
     }
 }

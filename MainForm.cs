@@ -23,8 +23,9 @@ namespace voivode
         public const string WhereAreYouLink = "http://st.wodserial.ru/strategy/pp/pp.php?p=15";
         //public const string MineFiguresLink = "http://st.wodserial.ru/strategy/pp/pp.php?p=13";
 
-        private Web browser = new Web { Agent = UserAgent.Firefox };
-        private CookieContainer cookies = new CookieContainer();
+        private readonly Web _browser = new Web { Agent = UserAgent.Firefox };
+        private readonly CookieContainer _cookies = new CookieContainer();
+        private readonly Model _model = new Model();
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -36,7 +37,7 @@ namespace voivode
 
         private bool Login()
         {
-            browser.Get(StrategyHost, cookies);
+            _browser.Get(StrategyHost, _cookies);
             using (PasswordDialog dialog = new PasswordDialog())
             {
                 dialog.Username = Settings.Default.username;
@@ -48,7 +49,7 @@ namespace voivode
                     if (answer != DialogResult.OK)
                         return false;
                     string authenticate = string.Format(AuthenticatePatterm, dialog.Username, dialog.Password);
-                    string response = browser.Post(StrategyHost, authenticate, StrategyHost, cookies);
+                    string response = _browser.Post(StrategyHost, authenticate, StrategyHost, _cookies);
                     if (response.Contains(StrategyLink))
                     {
                         if (dialog.Remember)
@@ -64,11 +65,11 @@ namespace voivode
                 }
             }
         }
-
         private void LoadModel()
         {
-            string response = browser.Get(WhereAreYouLink, StrategyHost, cookies);
-
+            string response = _browser.Get(WhereAreYouLink, StrategyHost, _cookies);
+            _model.Load(response);
+            textBoxTitle.Text = _model.Title;
         }
     }
 }
