@@ -7,20 +7,25 @@ namespace voivode
 {
     class Model
     {
+        public const string FigureIsDown = "(повалена)";
+        public const string GreenFigure = "class=\"success\"";
+        public const string RedFigure = "class=\"danger\"";
+
         public void Load(string source)
         {
             Title = source.Between("<h3>", "</h3>").RemoveTags();
             string table = source.Between("<table class=\"table\">", "</table>").Replace("<tr ", "<tr");
-            var lines = table.Enumerate("<tr>", "</tr>");
+            var lines = table.Enumerate("<tr", "</tr>");
             Regions = new SortedDictionary<string, List<Figure>>();
             foreach (string line in lines)
             {
+                bool mine = line.Contains(GreenFigure) || line.Contains(RedFigure);
                 var fields = line.Enumerate("<td>", "</td>").ToArray();
                 if (fields.Length != 3)
                     throw new IndexOutOfRangeException();
-                string region = fields[0];
-                string figure = fields[1];
-                string good = fields[2];
+                string region = fields[0].Trim();
+                string figure = fields[1].Trim();
+                string good = fields[2].Trim();
 
                 List<Figure> list;
                 if (!Regions.TryGetValue(region, out list))
@@ -28,10 +33,40 @@ namespace voivode
                     list = new List<Figure>();
                     Regions.Add(region, list);
                 }
+                string piece = null;
+                string number = null;
+                bool down = false;
+                if (figure.Length > 3)
+                {
+                    if (figure.EndsWith(FigureIsDown))
+                    {
+                        down = true;
+                        figure = figure.Remove(figure.IndexOf(FigureIsDown)).Trim();
+                    }
+                    string[] parts = figure.Split('-');
+                    number = parts[0];
+                    piece = parts[1];
+                }
+                string thing = null;
+                int count = 0;
+                string description = null;
+                if (good.Length > 3)
+                {
+                    thing = good.Between(string.Empty, "(").Trim();
+                    description = good.Between("\"", "\"");
+                    count = int.Parse(good.Between("(", "шт.)").Trim());
+                    if (!string.IsNullOrEmpty(description))
+                        description = description.Trim();
+                }
                 Figure f = new Figure
                 {
-                    Piece = figure,
-                    Thing = good,
+                    Mine = mine,
+                    Piece = piece,
+                    Number = number,
+                    IsDown = down,
+                    Thing = thing,
+                    Count = count,
+                    Description = description,
                 };
                 list.Add(f);
             }
@@ -43,12 +78,35 @@ namespace voivode
 
     public class Figure
     {
-        public int Number;
+        public bool Mine;
+        public string Number;
         public string Piece;
         public bool IsDown;
         public string Thing;
         public int Count;
         public string Description;
+
+        public override string ToString()
+        {
+            List<string> parts = new List<string>();
+            if (!string.IsNullOrEmpty(Number))
+            {
+                parts.Add(Number + "-" + Piece);
+                if (IsDown)
+                    parts.Add(Model.FigureIsDown);
+            }
+            if (!string.IsNullOrEmpty(Thing))
+            {
+                parts.Add(Thing);
+                if (Count > 0)
+                    parts.Add("(" + Count + " шт.)");
+                if (!string.IsNullOrEmpty(Description))
+                    parts.Add("\"" + Description + "\"");
+            }
+            if (!parts.Any())
+                return string.Empty;
+            return string.Join(" ", parts.ToArray());
+        }
     }
 
     public static class Parser
