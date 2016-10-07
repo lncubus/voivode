@@ -41,7 +41,7 @@ namespace voivode
                     if (figure.EndsWith(FigureIsDown))
                     {
                         down = true;
-                        figure = figure.Remove(figure.IndexOf(FigureIsDown)).Trim();
+                        figure = figure.Remove(figure.IndexOf(FigureIsDown, StringComparison.Ordinal)).Trim();
                     }
                     string[] parts = figure.Split('-');
                     number = parts[0];
