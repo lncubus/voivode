@@ -138,6 +138,7 @@ namespace voivode
 					LineAlignment = StringAlignment.Center,
 				};
 				SizeF sz = g.MeasureString ("W", figureFont);
+			    sz.Width = sz.Height;
 				foreach (var pair in city.regions)
 				{
 					string region = pair.Key;
@@ -224,7 +225,7 @@ namespace voivode
 							labelRect.Height *= 0.5F;
 							g.FillRectangle (Brushes.White, labelRect);
 							g.DrawRectangle (Pens.Black, (int) labelRect.Left, (int) labelRect.Top,
-								(int) labelRect.Right, (int) labelRect.Bottom);
+								(int) labelRect.Width, (int) labelRect.Height);
 							g.DrawString (f.Number, textFont, Brushes.Black, labelRect, sf);
 						}
 						origin.X += sz.Width;
