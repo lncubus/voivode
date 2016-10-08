@@ -29,16 +29,18 @@ namespace voivode
         private readonly CookieContainer _cookies = new CookieContainer();
         private readonly Model _model = new Model();
         private readonly MapInfo _map = MapInfo.Instance;
+		private Font textFont;
+		private Font figureFont;
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            CreateMaps();
+			textFont = new Font (Font.FontFamily, 2*Font.Size);
+			figureFont = new  Font (Font.FontFamily, 4*Font.Size);
+			CreateMaps();
             if (!Login())
                 Close();
             else
-            {
                 LoadModel();
-            }
         }
 
         private void CreateMaps()
@@ -104,23 +106,7 @@ namespace voivode
             }
             ToolStripButton button = (ToolStripButton) sender;
             string cityName = button.Name;
-            CityInfo city = _map.cities[cityName];
-            Bitmap pic = new Bitmap(city.image);
-            using (Graphics g = Graphics.FromImage(pic))
-            {
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                foreach (var pair in city.regions)
-                {
-                    string region = pair.Key;
-                    Rectangle rect = pair.Value;
-                    g.DrawRectangle(Pens.GreenYellow, rect);
-                    g.DrawString(region, Font, Brushes.GreenYellow, rect);
-                }
-                g.Flush();
-            }
-            pictureBox.Image = pic;
+			ShowCity (cityName);
         }
 
         private void toolStripComboBoxZoom_SelectedIndexChanged(object sender, EventArgs e)
@@ -137,5 +123,83 @@ namespace voivode
                     break;
             }
         }
+
+		private void ShowCity(string name)
+		{
+			CityInfo city = _map.cities[name];
+			Bitmap pic = new Bitmap(city.image);
+			using (Graphics g = Graphics.FromImage(pic))
+			{
+				g.SmoothingMode = SmoothingMode.AntiAlias;
+				g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+				StringFormat sf = new StringFormat {
+					Alignment = StringAlignment.Center,
+					LineAlignment = StringAlignment.Center,
+				};
+				foreach (var pair in city.regions)
+				{
+					string region = pair.Key;
+					Rectangle rect = pair.Value;
+					g.DrawRectangle(Pens.GreenYellow, rect);
+					//g.DrawString(region, Font, Brushes.GreenYellow, rect);
+					List<Figure> figures;
+					if (!_model.Regions.TryGetValue (region, out figures))
+						continue;
+					PointF origin = rect.Location;
+					foreach (Figure f in figures)
+					{
+						if (!string.IsNullOrEmpty (f.Number) && !string.IsNullOrEmpty (f.Piece))
+						{
+							string piece;
+							switch (f.Piece)
+							{
+							case "пешка":
+								piece = "♟"; break;
+							case "конь":
+								piece = "♞"; break;
+							case "офицер":
+								piece = "♝"; break;
+							case "ладья":
+								piece = "♜"; break;
+							case "ферзь":
+								piece = "♛"; break;
+							case "король":
+								piece = "♚"; break;
+							default:
+								piece = "⚠"; break;	
+							}
+							//string piece2 = new string ((char)(piece [0] - 6), 1);
+							SizeF sz = g.MeasureString (piece, figureFont);
+							Color c = pic.GetPixel((int)(origin.X + sz.Width/2), (int)(origin.Y + sz.Width/2));
+							sz.Width *= 1.25F;
+							//sz.Height;
+							RectangleF labelRect = new RectangleF {
+								Location = origin,
+								Size = sz,
+							};
+							g.DrawString (piece, figureFont,
+								c.GetBrightness() < 0.8 ? Brushes.Yellow : Brushes.Chocolate, labelRect, sf);
+							//g.DrawString (piece2, figureFont, Brushes.Black, origin);
+							labelRect.Y += sz.Height * 1.1F;
+							labelRect.Height *= 0.5F;
+							g.FillEllipse (Brushes.White, labelRect);
+							g.DrawString (f.Number, textFont, Brushes.Black, labelRect, sf);
+							origin.X += sz.Width;
+							if (origin.X + sz.Width >= rect.Right)
+							{
+								origin.X = rect.Left;
+								origin.Y += sz.Height*1.75F;
+							}
+						}
+						//f.Number
+					}
+
+				}
+				g.Flush();
+			}
+			pictureBox.Image = pic;
+
+		}
     }
 }
