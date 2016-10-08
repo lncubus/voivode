@@ -201,5 +201,15 @@ namespace voivode
 			pictureBox.Image = pic;
 
 		}
+
+        private void toolStripButtonSave_Click(object sender, EventArgs e)
+        {
+           // ////
+        }
+
+        private void toolStripButtonRefresh_Click(object sender, EventArgs e)
+        {
+            //
+        }
     }
 }
