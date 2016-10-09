@@ -31,11 +31,13 @@ namespace voivode
         private readonly MapInfo _map = MapInfo.Instance;
 		private Font textFont;
 		private Font figureFont;
+		private Font pawnFont;
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-			textFont = new Font (Font.FontFamily, 1.8F*Font.Size);
-			figureFont = new  Font (Font.FontFamily, 4*Font.Size);
+			textFont = new Font (Font.FontFamily, Font.Size);
+			figureFont = new  Font (Font.FontFamily, 2.2F*Font.Size);
+			pawnFont = new  Font (Font.FontFamily, 1.5F*Font.Size);
 			CreateMaps();
             if (!Login())
                 Close();
@@ -215,7 +217,8 @@ namespace voivode
 							Color c = pic.GetPixel ((int)(origin.X + sz.Width / 2), (int)(origin.Y + sz.Width / 2));
 							if (f.IsDown)
 								sf.FormatFlags = StringFormatFlags.DirectionVertical;
-							g.DrawString (piece, figureFont,
+							g.DrawString (piece,
+								piece != "♟" ? figureFont : pawnFont,
 								c.GetBrightness () < 0.8 ? Brushes.Yellow : Brushes.Chocolate, labelRect, sf);
 							sf.FormatFlags = 0;
 						}
@@ -250,7 +253,7 @@ namespace voivode
 				{
 					AddExtension = true,
 					CheckPathExists = true,
-					DefaultExt = "jpg",
+					DefaultExt = "png",
 					OverwritePrompt = true,
 					ValidateNames = true,
 				})
