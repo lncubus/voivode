@@ -14,16 +14,22 @@ namespace voivode
         public void Load(string source)
         {
             Title = source.Between("<h3>", "</h3>").RemoveTags();
-            string table = source.Between("<table class=\"table\">", "</table>").Replace("<tr ", "<tr");
+			string table = source.Replace(" >", ">").Between("<table ", "</table>");
+			if (string.IsNullOrEmpty(table))
+				return;
+			table = table.Replace("<tr ", "<tr").Replace("<td ", "<td");
             var lines = table.Enumerate("<tr", "</tr>");
             Regions = new SortedDictionary<string, List<Figure>>();
+            string region = null;
             foreach (string line in lines)
             {
                 bool mine = line.Contains(GreenFigure) || line.Contains(RedFigure);
                 var fields = line.Enumerate("<td>", "</td>").ToArray();
                 if (fields.Length != 3)
                     throw new IndexOutOfRangeException();
-                string region = fields[0].Trim();
+                string new_region = fields[0].Trim();
+                if (!string.IsNullOrEmpty(new_region))
+                    region = new_region;
                 string figure = fields[1].Trim();
                 string good = fields[2].Trim();
 
@@ -58,6 +64,8 @@ namespace voivode
                     if (!string.IsNullOrEmpty(description))
                         description = description.Trim();
                 }
+                if (string.IsNullOrEmpty(thing) && string.IsNullOrEmpty(figure))
+                    continue;
                 Figure f = new Figure
                 {
                     Mine = mine,

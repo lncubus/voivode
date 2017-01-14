@@ -37,7 +37,7 @@ namespace voivode
         {
 			textFont = new Font (Font.FontFamily, Font.Size);
 			figureFont = new  Font (Font.FontFamily, 2.2F*Font.Size);
-			pawnFont = new  Font (Font.FontFamily, 1.5F*Font.Size);
+			pawnFont = new  Font (Font.FontFamily, 1.7F*Font.Size);
 			CreateMaps();
             if (!Login())
                 Close();
@@ -215,12 +215,15 @@ namespace voivode
 								break;	
 							}
 							Color c = pic.GetPixel ((int)(origin.X + sz.Width / 2), (int)(origin.Y + sz.Width / 2));
-							if (f.IsDown)
-								sf.FormatFlags = StringFormatFlags.DirectionVertical;
-							g.DrawString (piece,
-								piece != "♟" ? figureFont : pawnFont,
-								c.GetBrightness () < 0.8 ? Brushes.Yellow : Brushes.Chocolate, labelRect, sf);
-							sf.FormatFlags = 0;
+                            if (f.IsDown)
+                                g.RotateTransform(90, MatrixOrder.Prepend);
+                                //sf.FormatFlags = StringFormatFlags.DirectionVertical;
+                            g.TranslateTransform(origin.X + sz.Width / 2, origin.Y + sz.Width / 2, MatrixOrder.Append);
+                            g.DrawString (piece,
+								piece != "♟" ? figureFont : pawnFont, 
+								c.GetBrightness () < 0.8 ? Brushes.Yellow : Brushes.Chocolate, 0, 0, sf);
+                            g.ResetTransform();
+                            //sf.FormatFlags = 0;
 						}
 						if (!string.IsNullOrEmpty (f.Number))
 						{
