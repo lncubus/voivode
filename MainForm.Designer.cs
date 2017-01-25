@@ -36,6 +36,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.labelAlert = new System.Windows.Forms.Label();
             this.panelClient = new System.Windows.Forms.Panel();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.toolStrip.SuspendLayout();
@@ -112,15 +113,24 @@
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
             this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
             // 
+            // labelAlert
+            // 
+            this.labelAlert.Dock = System.Windows.Forms.DockStyle.Top;
+            this.labelAlert.Location = new System.Drawing.Point(0, 26);
+            this.labelAlert.Name = "labelAlert";
+            this.labelAlert.Size = new System.Drawing.Size(536, 19);
+            this.labelAlert.TabIndex = 5;
+            this.labelAlert.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
             // panelClient
             // 
             this.panelClient.AutoScroll = true;
             this.panelClient.Controls.Add(this.pictureBox);
             this.panelClient.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelClient.Location = new System.Drawing.Point(0, 26);
+            this.panelClient.Location = new System.Drawing.Point(0, 45);
             this.panelClient.Name = "panelClient";
-            this.panelClient.Size = new System.Drawing.Size(536, 224);
-            this.panelClient.TabIndex = 2;
+            this.panelClient.Size = new System.Drawing.Size(536, 205);
+            this.panelClient.TabIndex = 6;
             // 
             // pictureBox
             // 
@@ -139,6 +149,7 @@
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(536, 272);
             this.Controls.Add(this.panelClient);
+            this.Controls.Add(this.labelAlert);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStrip);
             this.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -162,13 +173,13 @@
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private System.Windows.Forms.Panel panelClient;
-        private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxZoom;
         private System.Windows.Forms.ToolStripButton toolStripButtonSave;
         private System.Windows.Forms.ToolStripButton toolStripButtonRefresh;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-
+        private System.Windows.Forms.Label labelAlert;
+        private System.Windows.Forms.Panel panelClient;
+        private System.Windows.Forms.PictureBox pictureBox;
     }
 }
 

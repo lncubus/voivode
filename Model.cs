@@ -8,18 +8,27 @@ namespace voivode
     class Model
     {
         public const string FigureIsDown = "(повалена)";
+        public const string FigureIsCaptured = "(в плену)";
         public const string GreenFigure = "class=\"success\"";
         public const string RedFigure = "class=\"danger\"";
+
+        public const string AlertStart = "<div class=\"alert";
+        public const string AlertEnd = "</div>";
 
         public void Load(string source)
         {
             Title = source.Between("<h3>", "</h3>").RemoveTags();
-			string table = source.Replace(" >", ">").Between("<table ", "</table>");
+            var alert = source.Between(AlertStart, AlertEnd);
+            if (string.IsNullOrEmpty(alert))
+                Alert = null;
+            else
+                Alert = (AlertStart + alert).RemoveTags();
+            Regions.Clear();
+            string table = source.Replace(" >", ">").Between("<table ", "</table>");
 			if (string.IsNullOrEmpty(table))
 				return;
 			table = table.Replace("<tr ", "<tr").Replace("<td ", "<td");
             var lines = table.Enumerate("<tr", "</tr>");
-            Regions = new SortedDictionary<string, List<Figure>>();
             string region = null;
             foreach (string line in lines)
             {
@@ -42,16 +51,25 @@ namespace voivode
                 string piece = null;
                 string number = null;
                 bool down = false;
+                bool captured = false;
                 if (figure.Length > 3)
                 {
-                    if (figure.EndsWith(FigureIsDown))
+                    if (figure.Contains(FigureIsCaptured))
+                    {
+                        captured = true;
+                        figure = figure.Replace(FigureIsCaptured, string.Empty).Trim();
+                    }
+                    if (figure.Contains(FigureIsDown))
                     {
                         down = true;
-                        figure = figure.Remove(figure.IndexOf(FigureIsDown, StringComparison.Ordinal)).Trim();
+                        figure = figure.Replace(FigureIsDown, string.Empty).Trim();
                     }
                     string[] parts = figure.Split('-');
                     number = parts[0];
                     piece = parts[1];
+                    int brace = piece.IndexOf("(");
+                    if (brace >= 0)
+                        piece = piece.Remove(brace).Trim();
                 }
                 string thing = null;
                 int count = 0;
@@ -72,6 +90,7 @@ namespace voivode
                     Piece = piece,
                     Number = number,
                     IsDown = down,
+                    IsCaptured = captured,
                     Thing = thing,
                     Count = count,
                     Description = description,
@@ -81,7 +100,8 @@ namespace voivode
         }
 
         public string Title;
-        public SortedDictionary<string, List<Figure>> Regions;
+        public string Alert;
+        public SortedDictionary<string, List<Figure>> Regions = new SortedDictionary<string, List<Figure>>();
     }
 
     public class Figure
@@ -90,6 +110,7 @@ namespace voivode
         public string Number;
         public string Piece;
         public bool IsDown;
+        public bool IsCaptured;
         public string Thing;
         public int Count;
         public string Description;
@@ -102,6 +123,8 @@ namespace voivode
                 parts.Add(Number + "-" + Piece);
                 if (IsDown)
                     parts.Add(Model.FigureIsDown);
+                if (IsCaptured)
+                    parts.Add(Model.FigureIsCaptured);
             }
             if (!string.IsNullOrEmpty(Thing))
             {

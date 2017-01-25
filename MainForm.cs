@@ -19,10 +19,11 @@ namespace voivode
             InitializeComponent();
         }
 
-        public const string StrategyHost = "http://st.wodserial.ru/";
+        //public const string StrategyHost = "http://st.wodserial.ru/";
+        public const string StrategyHost = "http://strateg.wodserial.ru/";
         public const string AuthenticatePatterm = "username={0}&password={1}";
         public const string StrategyLink = "strategy/pp/pp.php";
-        public const string WhereAreYouLink = "http://st.wodserial.ru/strategy/pp/pp.php?p=15";
+        public const string WhereAreYouLink = StrategyHost + "strategy/pp/pp.php?p=15";
         //public const string MineFiguresLink = "http://st.wodserial.ru/strategy/pp/pp.php?p=13";
 
         private readonly Web _browser = new Web { Agent = UserAgent.Firefox };
@@ -95,6 +96,12 @@ namespace voivode
             string response = _browser.Get(WhereAreYouLink, StrategyHost, _cookies);
             _model.Load(response);
             toolStripStatusLabel.Text = _model.Title;
+            labelAlert.AutoSize = true;
+            labelAlert.ForeColor = Color.Firebrick;
+            labelAlert.Font = figureFont;
+            labelAlert.Text = _model.Alert ?? string.Empty;
+            labelAlert.Visible = !string.IsNullOrEmpty(_model.Alert);
+            //labelAlert.AutoSize = false;
         }
 
         private void toolStripButton_Click(object sender, EventArgs e)
@@ -211,7 +218,7 @@ namespace voivode
 								piece = "♚";
 								break;
 							default:
-								piece = "⚠";
+								piece = "?";
 								break;	
 							}
 							Color c = pic.GetPixel ((int)(origin.X + sz.Width / 2), (int)(origin.Y + sz.Width / 2));
@@ -223,8 +230,32 @@ namespace voivode
 								piece != "♟" ? figureFont : pawnFont, 
 								c.GetBrightness () < 0.8 ? Brushes.Yellow : Brushes.Chocolate, 0, 0, sf);
                             g.ResetTransform();
+                            if (f.IsCaptured)
+                            {
+                                var bars = new[]
+                                {
+                                     new RectangleF { X = 0.25F, Y = 0F, Width = 0.05F, Height = 1F },
+                                     new RectangleF { X = 0.48F, Y = 0F, Width = 0.04F, Height = 1F },
+                                     new RectangleF { X = 0.70F, Y = 0F, Width = 0.05F, Height = 1F },
+                                     new RectangleF { X = 0F, Y = 0.25F, Width = 1F, Height = 0.05F },
+                                     new RectangleF { X = 0F, Y = 0.48F, Width = 1F, Height = 0.04F },
+                                     new RectangleF { X = 0F, Y = 0.70F, Width = 1F, Height = 0.05F },
+                                };
+                                for(int b = 0; b < bars.Length; b++)
+                                {
+                                    var bar = bars[b];
+                                    bars[b] = new RectangleF
+                                    {
+                                        X = labelRect.X + bar.X * labelRect.Width,
+                                        Y = labelRect.Y + bar.Y * labelRect.Height,
+                                        Width = bar.Width * labelRect.Width,
+                                        Height = bar.Height * labelRect.Height,
+                                    };
+                                }
+                                g.FillRectangles(Brushes.Firebrick, bars);
+                            }
                             //sf.FormatFlags = 0;
-						}
+                        }
 						if (!string.IsNullOrEmpty (f.Number))
 						{
 							labelRect.Y += sz.Height;
