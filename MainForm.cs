@@ -156,21 +156,33 @@ namespace voivode
             ToolStripButton button = (ToolStripButton) sender;
             string cityName = button.Name;
 			ShowCity (cityName);
+			toolStripComboBoxZoom_SelectedIndexChanged(toolStripComboBoxZoom, null);
         }
 
         private void toolStripComboBoxZoom_SelectedIndexChanged(object sender, EventArgs e)
         {
             var image = pictureBox.Image;
-            switch (toolStripComboBoxZoom.SelectedIndex)
+			switch (toolStripComboBoxZoom.Text)
             {
-                case 0: // 100%
+                case "100%": // 100%
                     pictureBox.Dock = DockStyle.None;
+					panelClient.ScrollControlIntoView(pictureBox);
                     pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
                     break;
-                case 1:
-                    pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-                    pictureBox.Dock = DockStyle.Fill;
-                    break;
+				case "Fit":
+					pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+					pictureBox.Dock = DockStyle.Fill;
+					break;
+				default:
+					pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+					pictureBox.Dock = DockStyle.None;
+					panelClient.ScrollControlIntoView(pictureBox);
+					if (image == null)
+						return;
+					int scale = int.Parse(toolStripComboBoxZoom.Text.Replace('%', '0'));
+					pictureBox.Height = (scale * image.Height) / 1000;
+					pictureBox.Width = (scale * image.Width) / 1000;
+					break;
             }
         }
 

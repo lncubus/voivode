@@ -65,6 +65,8 @@
             this.toolStripComboBoxZoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBoxZoom.Items.AddRange(new object[] {
             "100%",
+			"50%",
+			"25%",
             "Fit"});
             this.toolStripComboBoxZoom.Name = "toolStripComboBoxZoom";
             this.toolStripComboBoxZoom.Size = new System.Drawing.Size(121, 26);
