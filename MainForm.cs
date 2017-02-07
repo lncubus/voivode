@@ -29,7 +29,7 @@ namespace voivode
         private readonly Web _browser = new Web { Agent = UserAgent.Firefox };
         private readonly CookieContainer _cookies = new CookieContainer();
         private readonly Model _model = new Model();
-        private readonly MapInfo _map = MapInfo.Instance;
+		private readonly MapInfo _map = new MapInfo("maps.ini");
 		private readonly IDictionary<string, ToolStripButton> _buttons =
 			new SortedDictionary<string, ToolStripButton>();
 		private Font textFont;
@@ -194,7 +194,7 @@ namespace voivode
 					string region = pair.Key;
 					Rectangle rect = pair.Value;
 					List<Figure> figures;
-					if (!_model.Regions.TryGetValue (region, out figures))
+					if (!_model.Regions.TryGetValue(region, out figures))
 						continue;
 					PointF origin = rect.Location;
 					foreach (Figure f in figures)
