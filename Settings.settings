@@ -8,5 +8,15 @@
     <Setting Name="password" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="hosts" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;Большая Игра=http://strateg.wodserial.ru/&lt;/string&gt;
+  &lt;string&gt;Стратегия=http://st.wodserial.ru/&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="host" Type="(Web Service URL)" Scope="User">
+      <Value Profile="(Default)">http://st.wodserial.ru/</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

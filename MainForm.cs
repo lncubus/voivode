@@ -19,11 +19,11 @@ namespace voivode
             InitializeComponent();
         }
 
-        //public const string StrategyHost = "http://st.wodserial.ru/";
-        public const string StrategyHost = "http://strateg.wodserial.ru/";
+        public string StrategyHost = "http://st.wodserial.ru/";
+        //public const string StrategyHost = "http://strateg.wodserial.ru/";
         public const string AuthenticatePatterm = "username={0}&password={1}";
         public const string StrategyLink = "strategy/pp/pp.php";
-        public const string WhereAreYouLink = StrategyHost + "strategy/pp/pp.php?p=15";
+        public const string WhereAreYouLink = "strategy/pp/pp.php?p=15";
         //public const string MineFiguresLink = "http://st.wodserial.ru/strategy/pp/pp.php?p=13";
 
         private readonly Web _browser = new Web { Agent = UserAgent.Firefox };
@@ -62,7 +62,6 @@ namespace voivode
 
         private bool Login()
         {
-            _browser.Get(StrategyHost, _cookies);
             using (PasswordDialog dialog = new PasswordDialog())
             {
                 dialog.Username = Settings.Default.username;
@@ -74,6 +73,7 @@ namespace voivode
                     if (answer != DialogResult.OK)
                         return false;
                     string authenticate = string.Format(AuthenticatePatterm, dialog.Username, dialog.Password);
+                    _browser.Get(StrategyHost, _cookies);
                     string response = _browser.Post(StrategyHost, authenticate, StrategyHost, _cookies);
                     if (response.Contains(StrategyLink))
                     {
@@ -93,7 +93,7 @@ namespace voivode
 
         private void LoadModel()
         {
-            string response = _browser.Get(WhereAreYouLink, StrategyHost, _cookies);
+            string response = _browser.Get(StrategyHost + WhereAreYouLink, StrategyHost, _cookies);
             _model.Load(response);
             toolStripStatusLabel.Text = _model.Title;
             labelAlert.AutoSize = true;
@@ -102,6 +102,7 @@ namespace voivode
             labelAlert.Text = _model.Alert ?? string.Empty;
             labelAlert.Visible = !string.IsNullOrEmpty(_model.Alert);
             //labelAlert.AutoSize = false;
+            
         }
 
         private void toolStripButton_Click(object sender, EventArgs e)
@@ -235,10 +236,10 @@ namespace voivode
                                 var bars = new[]
                                 {
                                      new RectangleF { X = 0.25F, Y = 0F, Width = 0.05F, Height = 1F },
-                                     new RectangleF { X = 0.48F, Y = 0F, Width = 0.04F, Height = 1F },
+                                     //new RectangleF { X = 0.48F, Y = 0F, Width = 0.04F, Height = 1F },
                                      new RectangleF { X = 0.70F, Y = 0F, Width = 0.05F, Height = 1F },
                                      new RectangleF { X = 0F, Y = 0.25F, Width = 1F, Height = 0.05F },
-                                     new RectangleF { X = 0F, Y = 0.48F, Width = 1F, Height = 0.04F },
+                                     //new RectangleF { X = 0F, Y = 0.48F, Width = 1F, Height = 0.04F },
                                      new RectangleF { X = 0F, Y = 0.70F, Width = 1F, Height = 0.05F },
                                 };
                                 for(int b = 0; b < bars.Length; b++)
@@ -252,7 +253,7 @@ namespace voivode
                                         Height = bar.Height * labelRect.Height,
                                     };
                                 }
-                                g.FillRectangles(Brushes.Firebrick, bars);
+                                g.FillRectangles(Brushes.Red, bars);
                             }
                             //sf.FormatFlags = 0;
                         }
