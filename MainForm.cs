@@ -144,6 +144,26 @@ namespace voivode
             }
         }
 
+		int oldX = -1, oldY = -1;
+
+		private void pictureBox_MouseMove (object sender, MouseEventArgs e)
+		{
+			if (!e.Button.HasFlag(MouseButtons.Left))
+			{
+				oldX = -1;
+				oldY = -1;
+				return;
+			}
+			if (oldX != -1 && oldY != -1)
+			{
+				int dX = e.X - oldX;
+				int dY = e.Y - oldY;
+				Text = string.Format("{0} {1}", dX, dY);
+			}
+			oldX = e.X;
+			oldY = e.Y;
+		}
+
         private void toolStripButton_Click(object sender, EventArgs e)
         {
             foreach (ToolStripItem item in ((ToolStripButton)sender).GetCurrentParent().Items)
@@ -184,6 +204,11 @@ namespace voivode
 					pictureBox.Width = (scale * image.Width) / 1000;
 					break;
             }
+			if (pictureBox.Dock != DockStyle.Fill &&
+			    (pictureBox.Height > panelClient.Height || pictureBox.Width > panelClient.Width))
+				pictureBox.Cursor = Cursors.Hand;
+			else
+				pictureBox.Cursor = Cursors.Default;
         }
 
 		private void ShowCity(string name)
