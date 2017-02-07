@@ -45,7 +45,11 @@ namespace voivode
             if (!Login())
                 Close();
             else
+            {
                 LoadModel();
+                ShowCityButtons();
+                ClickFirstCityButton();
+            }
         }
 
         private void CreateMaps()
@@ -70,7 +74,9 @@ namespace voivode
         {
             using (PasswordDialog dialog = new PasswordDialog())
             {
-                dialog.Sites = Settings.Default.hosts.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                char[] delims = null;
+                dialog.Hosts = Settings.Default.hosts.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+                dialog.Host = Settings.Default.host;
                 dialog.Username = Settings.Default.username;
                 dialog.Password = Settings.Default.password;
                 dialog.Remember = !string.IsNullOrEmpty(dialog.Username);
@@ -79,6 +85,7 @@ namespace voivode
                     DialogResult answer = dialog.ShowDialog();
                     if (answer != DialogResult.OK)
                         return false;
+                    StrategyHost = dialog.Host;
                     string authenticate = string.Format(AuthenticatePatterm, dialog.Username, dialog.Password);
                     _browser.Get(StrategyHost, _cookies);
                     string response = _browser.Post(StrategyHost, authenticate, StrategyHost, _cookies);
@@ -88,6 +95,7 @@ namespace voivode
                         {
                             Settings.Default.username = dialog.Username;
                             Settings.Default.password = dialog.Password;
+                            Settings.Default.host = dialog.Host;
                         }
                         else
                             Settings.Default.Reset();
@@ -108,8 +116,31 @@ namespace voivode
             labelAlert.Font = figureFont;
             labelAlert.Text = _model.Alert ?? string.Empty;
             labelAlert.Visible = !string.IsNullOrEmpty(_model.Alert);
-            //labelAlert.AutoSize = false;
-            
+        }
+
+        private void ShowCityButtons()
+        {
+            foreach (ToolStripItem item in toolStrip.Items)
+            {
+                ToolStripButton b = item as ToolStripButton;
+                if (b == null || !_buttons.Values.Contains(b))
+                    continue;
+                string cityName = b.Name;
+                CityInfo city = _map.cities[cityName];
+                b.Visible = _model.Regions.Keys.Intersect(city.regions.Keys).Any();
+            }
+        }
+
+        private void ClickFirstCityButton()
+        {
+            foreach (ToolStripItem item in toolStrip.Items)
+            {
+                ToolStripButton b = item as ToolStripButton;
+                if (b == null || !_buttons.Values.Contains(b) || !b.Visible)
+                    continue;
+                toolStripButton_Click(b, null);
+                break;
+            }
         }
 
         private void toolStripButton_Click(object sender, EventArgs e)
@@ -128,9 +159,10 @@ namespace voivode
 
         private void toolStripComboBoxZoom_SelectedIndexChanged(object sender, EventArgs e)
         {
+            var image = pictureBox.Image;
             switch (toolStripComboBoxZoom.SelectedIndex)
             {
-                case 0:
+                case 0: // 100%
                     pictureBox.Dock = DockStyle.None;
                     pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
                     break;

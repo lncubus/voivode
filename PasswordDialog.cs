@@ -18,6 +18,8 @@ namespace voivode
 
         private void buttonLogin_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(Host))
+                ActiveControl = comboBoxSites;
             if (string.IsNullOrEmpty(Username))
                 ActiveControl = textBoxUser;
             else if (string.IsNullOrEmpty(Password))
@@ -26,12 +28,24 @@ namespace voivode
                 DialogResult = DialogResult.OK;
         }
 
-        public string[] Sites
+        public string[] Hosts
         {
             set
             {
                 comboBoxSites.Items.Clear();
                 comboBoxSites.Items.AddRange(value);
+            }
+        }
+
+        public string Host
+        {
+            get
+            {
+                return comboBoxSites.Text;
+            }
+            set
+            {
+                comboBoxSites.Text = value;
             }
         }
 
