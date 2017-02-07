@@ -65,8 +65,8 @@
             this.toolStripComboBoxZoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBoxZoom.Items.AddRange(new object[] {
             "100%",
-			"50%",
-			"25%",
+            "50%",
+            "25%",
             "Fit"});
             this.toolStripComboBoxZoom.Name = "toolStripComboBoxZoom";
             this.toolStripComboBoxZoom.Size = new System.Drawing.Size(121, 26);
@@ -144,7 +144,9 @@
             this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox.TabIndex = 3;
             this.pictureBox.TabStop = false;
-			this.pictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseMove);
+            this.pictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseDown);
+            this.pictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseMove);
+            this.pictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseUp);
             // 
             // MainForm
             // 

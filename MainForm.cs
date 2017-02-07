@@ -142,26 +142,6 @@ namespace voivode
             }
         }
 
-		int oldX = -1, oldY = -1;
-
-		private void pictureBox_MouseMove (object sender, MouseEventArgs e)
-		{
-			if (!e.Button.HasFlag(MouseButtons.Left))
-			{
-				oldX = -1;
-				oldY = -1;
-				return;
-			}
-			if (oldX != -1 && oldY != -1)
-			{
-				int dX = e.X - oldX;
-				int dY = e.Y - oldY;
-				Text = string.Format("{0} {1}", dX, dY);
-			}
-			oldX = e.X;
-			oldY = e.Y;
-		}
-
         private void toolStripButton_Click(object sender, EventArgs e)
         {
             foreach (ToolStripItem item in ((ToolStripButton)sender).GetCurrentParent().Items)
@@ -180,11 +160,13 @@ namespace voivode
         private void toolStripComboBoxZoom_SelectedIndexChanged(object sender, EventArgs e)
         {
             var image = pictureBox.Image;
-			switch (toolStripComboBoxZoom.Text)
+            panelClient.HorizontalScroll.Value = 0;
+            panelClient.VerticalScroll.Value = 0;
+            panelClient.ScrollControlIntoView(pictureBox);
+            switch (toolStripComboBoxZoom.Text)
             {
                 case "100%": // 100%
                     pictureBox.Dock = DockStyle.None;
-					panelClient.ScrollControlIntoView(pictureBox);
                     pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
                     break;
 				case "Fit":
@@ -194,7 +176,6 @@ namespace voivode
 				default:
 					pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
 					pictureBox.Dock = DockStyle.None;
-					panelClient.ScrollControlIntoView(pictureBox);
 					if (image == null)
 						return;
 					int scale = int.Parse(toolStripComboBoxZoom.Text.Replace('%', '0'));
@@ -202,11 +183,6 @@ namespace voivode
 					pictureBox.Width = (scale * image.Width) / 1000;
 					break;
             }
-			if (pictureBox.Dock != DockStyle.Fill &&
-			    (pictureBox.Height > panelClient.Height || pictureBox.Width > panelClient.Width))
-				pictureBox.Cursor = Cursors.Hand;
-			else
-				pictureBox.Cursor = Cursors.Default;
         }
 
 		private void ShowCity(string name)
@@ -403,6 +379,59 @@ namespace voivode
         private void toolStripButtonRefresh_Click(object sender, EventArgs e)
         {
             //
+        }
+
+        Point origin;
+        bool dragging = false;
+
+        private void pictureBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+                return;
+            origin = pictureBox.PointToScreen(e.Location);
+            dragging = true;
+            pictureBox.Cursor = Cursors.NoMove2D;
+        }
+
+        private void pictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+            {
+                dragging = false;
+                pictureBox.Cursor = Cursors.Default;
+                return;
+            }
+            Point current = pictureBox.PointToScreen(e.Location);
+            Point delta = new Point
+            {
+                X = current.X - origin.X,
+                Y = current.Y - origin.Y,
+            };
+            if (PerformScroll(panelClient.HorizontalScroll, delta.X))
+                origin.X = current.X;
+            if (PerformScroll(panelClient.VerticalScroll, delta.Y))
+                origin.Y = current.Y;
+        }
+
+        private void pictureBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            dragging = false;
+            pictureBox.Cursor = Cursors.Default;
+        }
+
+        private bool PerformScroll(ScrollProperties scroll, int delta)
+        {
+            if (scroll.Maximum - scroll.Minimum <= scroll.LargeChange)
+                return false;
+            if (Math.Abs(delta) < scroll.SmallChange)
+                return false;
+            int value = scroll.Value - delta;
+            if (value < scroll.Minimum)
+                value = scroll.Minimum;
+            if (value >= scroll.Maximum - scroll.LargeChange)
+                value = scroll.Maximum - scroll.LargeChange;
+            scroll.Value = value;
+            return true;
         }
     }
 }
