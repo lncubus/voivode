@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Windows.Forms;
 
 namespace voivode
@@ -361,18 +359,44 @@ namespace voivode
         {
 			if (pictureBox.Image == null)
 				return;
-			using (SaveFileDialog dialog = new SaveFileDialog
+
+            using (SaveFileDialog dialog = new SaveFileDialog
 				{
 					AddExtension = true,
 					CheckPathExists = true,
-					DefaultExt = "png",
-					OverwritePrompt = true,
+					DefaultExt = "jpeg",
+                    Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp;  *.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png",
+                    OverwritePrompt = true,
 					ValidateNames = true,
 				})
 			{
 				if (dialog.ShowDialog () != DialogResult.OK)
 					return;
-				pictureBox.Image.Save (dialog.FileName);
+                ImageFormat f;
+                string ext = Path.GetExtension(dialog.FileName).Remove(0,1).ToLowerInvariant();
+                switch (ext)
+                {
+                    case "jpg": case "jpeg":
+                        f = ImageFormat.Jpeg;
+                        break;
+                    case "gif":
+                        f = ImageFormat.Gif;
+                        break;
+                    case "bmp":
+                        f = ImageFormat.Bmp;
+                        break;
+                    case "png":
+                        f = ImageFormat.Png;
+                        break;
+                    case "tif": case "tiff":
+                        f = ImageFormat.Tiff;
+                        break;
+                    default:
+                        MessageBox.Show("Usupported image format, will use PNG format instead!");
+                        f = ImageFormat.Png;
+                        break;
+                }
+				pictureBox.Image.Save (dialog.FileName, f);
 			}
         }
 
