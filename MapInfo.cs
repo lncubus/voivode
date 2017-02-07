@@ -7,11 +7,9 @@ namespace voivode
 {
     public class MapInfo
     {
-        public static readonly MapInfo Instance = new MapInfo("maps.ini");
-
         public readonly Dictionary<string, CityInfo> cities = new Dictionary<string, CityInfo>();
 
-        private MapInfo(string filename)
+		public MapInfo(string filename)
         {
             string[] ini = File.ReadAllLines(filename);
             CityInfo city = null;
@@ -38,8 +36,12 @@ namespace voivode
                     parts[i] = parts[i].Trim();
                 int x = int.Parse(parts[1]);
                 int y = int.Parse(parts[2]);
-                int w = int.Parse(parts[3]) - x;
-                int h = int.Parse(parts[4]) - y;
+				int w = int.Parse(parts[3]);
+				if (!parts[3].StartsWith("+"))
+					w -= x;
+				int h = int.Parse(parts[4]);
+				if (!parts[4].StartsWith("+"))
+					h -= y;
                 Rectangle rect = new Rectangle(x, y, w, h);
                 city.regions.Add(parts[0], rect);
             }
