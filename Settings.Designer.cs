@@ -49,14 +49,10 @@ namespace voivode {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>Большая Игра=http://strateg.wodserial.ru/</string>
-  <string>Стратегия=http://st.wodserial.ru/</string>
-</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection hosts {
+        [global::System.Configuration.DefaultSettingValueAttribute("http://strateg.wodserial.ru/\r\nhttp://st.wodserial.ru/")]
+        public string hosts {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["hosts"]));
+                return ((string)(this["hosts"]));
             }
         }
         

@@ -26,6 +26,15 @@ namespace voivode
                 DialogResult = DialogResult.OK;
         }
 
+        public string[] Sites
+        {
+            set
+            {
+                comboBoxSites.Items.Clear();
+                comboBoxSites.Items.AddRange(value);
+            }
+        }
+
         public string Username
         {
             get { return textBoxUser.Text; }

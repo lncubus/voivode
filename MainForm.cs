@@ -64,6 +64,7 @@ namespace voivode
         {
             using (PasswordDialog dialog = new PasswordDialog())
             {
+                dialog.Sites = Settings.Default.hosts.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 dialog.Username = Settings.Default.username;
                 dialog.Password = Settings.Default.password;
                 dialog.Remember = !string.IsNullOrEmpty(dialog.Username);
