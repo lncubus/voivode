@@ -30,6 +30,8 @@ namespace voivode
         private readonly CookieContainer _cookies = new CookieContainer();
         private readonly Model _model = new Model();
         private readonly MapInfo _map = MapInfo.Instance;
+		private readonly IDictionary<string, ToolStripButton> _buttons =
+			new SortedDictionary<string, ToolStripButton>();
 		private Font textFont;
 		private Font figureFont;
 		private Font pawnFont;
@@ -50,12 +52,16 @@ namespace voivode
         {
             foreach (string city in _map.cities.Keys)
             {
-                ToolStripButton button = new ToolStripButton();
-                button.DisplayStyle = ToolStripItemDisplayStyle.Text;
-                button.Name = city;
-                button.Text = city;
-                button.Click += toolStripButton_Click;
+                ToolStripButton button = new ToolStripButton()
+				{
+	                DisplayStyle = ToolStripItemDisplayStyle.Text,
+	                Name = city,
+	                Text = city,
+					Visible = false,
+				};
+				button.Click += toolStripButton_Click;
                 toolStrip.Items.Add(button);
+				_buttons.Add(city, button);
             }
             //pictureBox.SizeMode = 
         }
