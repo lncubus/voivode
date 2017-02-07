@@ -133,6 +133,7 @@ namespace voivode
 
         private void ClickFirstCityButton()
         {
+            toolStripComboBoxZoom.SelectedIndex = 0;
             foreach (ToolStripItem item in toolStrip.Items)
             {
                 ToolStripButton b = item as ToolStripButton;
