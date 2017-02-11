@@ -18,11 +18,6 @@ namespace voivode
         public void Load(string source)
         {
             Title = source.Between("<h3>", "</h3>").RemoveTags();
-            var alert = source.Between(AlertStart, AlertEnd);
-            if (string.IsNullOrEmpty(alert))
-                Alert = null;
-            else
-                Alert = (AlertStart + alert).RemoveTags();
             Regions.Clear();
             string table = source.Replace(" >", ">").Between("<table ", "</table>");
 			if (string.IsNullOrEmpty(table))
@@ -100,7 +95,14 @@ namespace voivode
         }
 
         public string Title;
-        public string Alert;
+		public static string Alert(string source)
+		{
+			var alert = source.Between(AlertStart, AlertEnd);
+			if (string.IsNullOrEmpty(alert))
+				return null;
+			return (AlertStart + alert).RemoveTags();
+		}
+
         public SortedDictionary<string, List<Figure>> Regions = new SortedDictionary<string, List<Figure>>();
     }
 

@@ -17,12 +17,10 @@ namespace voivode
             InitializeComponent();
         }
 
-        public string StrategyHost = "http://st.wodserial.ru/";
-        //public const string StrategyHost = "http://strateg.wodserial.ru/";
-        public const string AuthenticatePatterm = "username={0}&password={1}";
-        public const string StrategyLink = "strategy/pp/pp.php";
+        public string StrategyHost;
+        public const string AuthenticatePattern = "username={0}&password={1}";
+		public const string LoginContainer = "loginContainer";
         public const string WhereAreYouLink = "strategy/pp/pp.php?p=15";
-        //public const string MineFiguresLink = "http://st.wodserial.ru/strategy/pp/pp.php?p=13";
 
         private readonly Web _browser = new Web { Agent = UserAgent.Firefox };
         private readonly CookieContainer _cookies = new CookieContainer();
@@ -84,10 +82,16 @@ namespace voivode
                     if (answer != DialogResult.OK)
                         return false;
                     StrategyHost = dialog.Host;
-                    string authenticate = string.Format(AuthenticatePatterm, dialog.Username, dialog.Password);
+                    string authenticate = string.Format(AuthenticatePattern, dialog.Username, dialog.Password);
                     _browser.Get(StrategyHost, _cookies);
                     string response = _browser.Post(StrategyHost, authenticate, StrategyHost, _cookies);
-                    if (response.Contains(StrategyLink))
+					if (response.Contains(LoginContainer))
+					{
+						string alert = Model.Alert(response);
+						if (!string.IsNullOrEmpty(alert))
+							MessageBox.Show(alert);
+					}
+					else
                     {
                         if (dialog.Remember)
                         {
@@ -112,8 +116,9 @@ namespace voivode
             labelAlert.AutoSize = true;
             labelAlert.ForeColor = Color.Firebrick;
             labelAlert.Font = figureFont;
-            labelAlert.Text = _model.Alert ?? string.Empty;
-            labelAlert.Visible = !string.IsNullOrEmpty(_model.Alert);
+			string alert = Model.Alert(response);
+			labelAlert.Visible = !string.IsNullOrEmpty(alert);
+			labelAlert.Text = alert ?? string.Empty;
         }
 
         private void ShowCityButtons()
@@ -348,33 +353,38 @@ namespace voivode
 			{
 				if (dialog.ShowDialog () != DialogResult.OK)
 					return;
-                ImageFormat f;
-                string ext = Path.GetExtension(dialog.FileName).Remove(0,1).ToLowerInvariant();
-                switch (ext)
-                {
-                    case "jpg": case "jpeg":
-                        f = ImageFormat.Jpeg;
-                        break;
-                    case "gif":
-                        f = ImageFormat.Gif;
-                        break;
-                    case "bmp":
-                        f = ImageFormat.Bmp;
-                        break;
-                    case "png":
-                        f = ImageFormat.Png;
-                        break;
-                    case "tif": case "tiff":
-                        f = ImageFormat.Tiff;
-                        break;
-                    default:
-                        MessageBox.Show("Usupported image format, will use PNG format instead!");
-                        f = ImageFormat.Png;
-                        break;
-                }
-				pictureBox.Image.Save (dialog.FileName, f);
+				SavePicture(dialog.FileName, pictureBox.Image);
 			}
         }
+
+		public static void SavePicture(string filename, Image image)
+		{
+			ImageFormat f;
+			string ext = Path.GetExtension(filename).Remove(0,1).ToLowerInvariant();
+			switch (ext)
+			{
+				case "jpg": case "jpeg":
+					f = ImageFormat.Jpeg;
+					break;
+				case "gif":
+					f = ImageFormat.Gif;
+					break;
+				case "bmp":
+					f = ImageFormat.Bmp;
+					break;
+				case "png":
+					f = ImageFormat.Png;
+					break;
+				case "tif": case "tiff":
+					f = ImageFormat.Tiff;
+					break;
+				default:
+					MessageBox.Show("Usupported image format, will use PNG format instead!");
+					f = ImageFormat.Png;
+					break;
+			}
+			image.Save (filename, f);
+		}
 
         private void toolStripButtonRefresh_Click(object sender, EventArgs e)
         {
@@ -382,14 +392,12 @@ namespace voivode
         }
 
         Point origin;
-        bool dragging = false;
 
         private void pictureBox_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
                 return;
             origin = pictureBox.PointToScreen(e.Location);
-            dragging = true;
             pictureBox.Cursor = Cursors.NoMove2D;
         }
 
@@ -397,7 +405,6 @@ namespace voivode
         {
             if (e.Button != MouseButtons.Left)
             {
-                dragging = false;
                 pictureBox.Cursor = Cursors.Default;
                 return;
             }
@@ -415,7 +422,6 @@ namespace voivode
 
         private void pictureBox_MouseUp(object sender, MouseEventArgs e)
         {
-            dragging = false;
             pictureBox.Cursor = Cursors.Default;
         }
 
