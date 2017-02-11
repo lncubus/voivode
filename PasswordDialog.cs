@@ -66,5 +66,16 @@ namespace voivode
             get { return checkBoxRemember.Checked; }
             set { checkBoxRemember.Checked = value; }
         }
+
+        public string Alert
+        {
+            get { return labelAlert.Text; }
+            set
+            {
+                labelAlert.Text = value ?? "";
+                bool visible = !string.IsNullOrEmpty(labelAlert.Text);
+                labelAlert.Visible = visible;
+            }
+        }
     }
 }

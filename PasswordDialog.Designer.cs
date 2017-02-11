@@ -37,6 +37,7 @@
             this.checkBoxRemember = new System.Windows.Forms.CheckBox();
             this.labelSite = new System.Windows.Forms.Label();
             this.comboBoxSites = new System.Windows.Forms.ComboBox();
+            this.labelAlert = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // labelUser
@@ -136,6 +137,17 @@
             this.comboBoxSites.Size = new System.Drawing.Size(414, 28);
             this.comboBoxSites.TabIndex = 1;
             // 
+            // labelAlert
+            // 
+            this.labelAlert.BackColor = System.Drawing.Color.SeaShell;
+            this.labelAlert.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.labelAlert.ForeColor = System.Drawing.Color.Firebrick;
+            this.labelAlert.Location = new System.Drawing.Point(0, 249);
+            this.labelAlert.Name = "labelAlert";
+            this.labelAlert.Size = new System.Drawing.Size(438, 20);
+            this.labelAlert.TabIndex = 9;
+            this.labelAlert.Visible = false;
+            // 
             // PasswordDialog
             // 
             this.AcceptButton = this.buttonLogin;
@@ -143,7 +155,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.CancelButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size(438, 272);
+            this.ClientSize = new System.Drawing.Size(438, 269);
             this.Controls.Add(this.comboBoxSites);
             this.Controls.Add(this.labelSite);
             this.Controls.Add(this.checkBoxRemember);
@@ -153,6 +165,7 @@
             this.Controls.Add(this.labelPassword);
             this.Controls.Add(this.textBoxUser);
             this.Controls.Add(this.labelUser);
+            this.Controls.Add(this.labelAlert);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -174,5 +187,6 @@
         private System.Windows.Forms.CheckBox checkBoxRemember;
         private System.Windows.Forms.Label labelSite;
         private System.Windows.Forms.ComboBox comboBoxSites;
+        private System.Windows.Forms.Label labelAlert;
     }
 }

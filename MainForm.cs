@@ -88,8 +88,7 @@ namespace voivode
 					if (response.Contains(LoginContainer))
 					{
 						string alert = Model.Alert(response);
-						if (!string.IsNullOrEmpty(alert))
-							MessageBox.Show(alert);
+                        dialog.Alert = alert;
 					}
 					else
                     {
