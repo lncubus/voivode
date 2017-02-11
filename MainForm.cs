@@ -25,7 +25,7 @@ namespace voivode
         private readonly Web _browser = new Web { Agent = UserAgent.Firefox };
         private readonly CookieContainer _cookies = new CookieContainer();
         private readonly Model _model = new Model();
-		private readonly MapInfo _map = new MapInfo("maps.ini");
+		private MapInfo _map;
 		private readonly IDictionary<string, ToolStripButton> _buttons =
 			new SortedDictionary<string, ToolStripButton>();
 		private Font textFont;
@@ -35,11 +35,12 @@ namespace voivode
         private void MainForm_Load(object sender, EventArgs e)
         {
 			textFont = new Font (Font.FontFamily, Font.Size);
-			figureFont = new  Font (Font.FontFamily, 2.2F*Font.Size);
-			pawnFont = new  Font (Font.FontFamily, 1.7F*Font.Size);
-			CreateMaps();
-            if (!Login())
-                Close();
+			figureFont = new Font (Font.FontFamily, 2.2F*Font.Size);
+			pawnFont = new Font (Font.FontFamily, 1.7F*Font.Size);
+			_map = new MapInfo("maps.ini");
+			CreateMapButtons();
+			if (!Login())
+				this.BeginInvoke(new MethodInvoker(this.Close));
             else
             {
                 LoadModel();
@@ -48,7 +49,7 @@ namespace voivode
             }
         }
 
-        private void CreateMaps()
+        private void CreateMapButtons()
         {
             foreach (string city in _map.cities.Keys)
             {
