@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -18,10 +19,17 @@ namespace voivode
         [STAThread]
         static void Main()
         {
+            SetHomeDirectory();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ThreadException += Application_ThreadException;
             Application.Run(new MainForm());
+        }
+
+        static void SetHomeDirectory()
+        {
+            string my = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Directory.SetCurrentDirectory(my);
         }
 
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
