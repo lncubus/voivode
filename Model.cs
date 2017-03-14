@@ -67,13 +67,17 @@ namespace voivode
                         piece = piece.Remove(brace).Trim();
                 }
                 string thing = null;
-                int count = 0;
+                string count = null;
                 string description = null;
                 if (good.Length > 3)
                 {
-                    thing = good.Between(string.Empty, "(").Trim();
+                    thing = good.Between(string.Empty, "(");
+                    if (!string.IsNullOrEmpty(thing))
+                        thing = thing.Trim();
                     description = good.Between("\"", "\"");
-                    count = int.Parse(good.Between("(", "шт.)").Trim());
+                    count = good.Between("(", "шт.)");
+                    if (!string.IsNullOrEmpty(count))
+                        count = count.Trim();
                     if (!string.IsNullOrEmpty(description))
                         description = description.Trim();
                 }
@@ -114,7 +118,7 @@ namespace voivode
         public bool IsDown;
         public bool IsCaptured;
         public string Thing;
-        public int Count;
+        public string Count;
         public string Description;
 
         public override string ToString()
@@ -131,7 +135,7 @@ namespace voivode
             if (!string.IsNullOrEmpty(Thing))
             {
                 parts.Add(Thing);
-                if (Count > 0)
+                if (!string.IsNullOrEmpty(Count))
                     parts.Add("(" + Count + " шт.)");
                 if (!string.IsNullOrEmpty(Description))
                     parts.Add("\"" + Description + "\"");
