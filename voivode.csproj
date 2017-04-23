@@ -99,6 +99,9 @@
     <None Include="Москва.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Тверь.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Мир.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
