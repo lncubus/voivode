@@ -8,7 +8,7 @@ namespace voivode
     class Model
     {
         public const string FigureIsDown = "(повалена)";
-        public const string FigureIsCaptured = "(в плену)";
+        public const string FigureIsCaptured = "(в плену";
         public const string GreenFigure = "class=\"success\"";
         public const string RedFigure = "class=\"danger\"";
 
@@ -45,6 +45,7 @@ namespace voivode
                 }
                 string piece = null;
                 string number = null;
+                string captor = null;
                 bool down = false;
                 bool captured = false;
                 if (figure.Length > 3)
@@ -52,7 +53,14 @@ namespace voivode
                     if (figure.Contains(FigureIsCaptured))
                     {
                         captured = true;
-                        figure = figure.Replace(FigureIsCaptured, string.Empty).Trim();
+                        int pos = figure.IndexOf(FigureIsCaptured);
+                        if (pos > 0)
+                        {
+                            captor = figure.Substring(pos + FigureIsCaptured.Length).Replace(")", string.Empty).Trim();
+                            if (string.IsNullOrEmpty(captor))
+                                captor = null;
+                            figure = figure.Substring(0, pos).Trim();
+                        }
                     }
                     if (figure.Contains(FigureIsDown))
                     {
@@ -90,6 +98,7 @@ namespace voivode
                     Number = number,
                     IsDown = down,
                     IsCaptured = captured,
+                    Captor = captor,
                     Thing = thing,
                     Count = count,
                     Description = description,
@@ -115,6 +124,7 @@ namespace voivode
         public bool Mine;
         public string Number;
         public string Piece;
+        public string Captor;
         public bool IsDown;
         public bool IsCaptured;
         public string Thing;
@@ -130,7 +140,12 @@ namespace voivode
                 if (IsDown)
                     parts.Add(Model.FigureIsDown);
                 if (IsCaptured)
-                    parts.Add(Model.FigureIsCaptured);
+                {
+                    if (string.IsNullOrEmpty(Captor))
+                        parts.Add(Model.FigureIsCaptured + ")");
+                    else
+                        parts.Add(Model.FigureIsCaptured + " " + Captor + ")");
+                }
             }
             if (!string.IsNullOrEmpty(Thing))
             {

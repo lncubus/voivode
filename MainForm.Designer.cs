@@ -48,6 +48,7 @@
             // toolStrip
             // 
             this.toolStrip.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.toolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripComboBoxZoom,
             this.toolStripButtonSave,
@@ -57,7 +58,7 @@
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.toolStrip.Size = new System.Drawing.Size(536, 26);
+            this.toolStrip.Size = new System.Drawing.Size(536, 31);
             this.toolStrip.TabIndex = 0;
             // 
             // toolStripComboBoxZoom
@@ -69,7 +70,7 @@
             "25%",
             "Fit"});
             this.toolStripComboBoxZoom.Name = "toolStripComboBoxZoom";
-            this.toolStripComboBoxZoom.Size = new System.Drawing.Size(121, 26);
+            this.toolStripComboBoxZoom.Size = new System.Drawing.Size(121, 31);
             this.toolStripComboBoxZoom.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxZoom_SelectedIndexChanged);
             // 
             // toolStripButtonSave
@@ -78,7 +79,7 @@
             this.toolStripButtonSave.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSave.Image")));
             this.toolStripButtonSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSave.Name = "toolStripButtonSave";
-            this.toolStripButtonSave.Size = new System.Drawing.Size(91, 23);
+            this.toolStripButtonSave.Size = new System.Drawing.Size(110, 28);
             this.toolStripButtonSave.Text = "Сохранить";
             this.toolStripButtonSave.Click += new System.EventHandler(this.toolStripButtonSave_Click);
             // 
@@ -89,19 +90,21 @@
             this.toolStripButtonRefresh.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonRefresh.Image")));
             this.toolStripButtonRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonRefresh.Name = "toolStripButtonRefresh";
-            this.toolStripButtonRefresh.Size = new System.Drawing.Size(85, 23);
+            this.toolStripButtonRefresh.Size = new System.Drawing.Size(101, 28);
             this.toolStripButtonRefresh.Text = "Обновить";
+            this.toolStripButtonRefresh.Visible = false;
             this.toolStripButtonRefresh.Click += new System.EventHandler(this.toolStripButtonRefresh_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 26);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
             // 
             // statusStrip
             // 
             this.statusStrip.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.statusStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
+            this.statusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel});
             this.statusStrip.Location = new System.Drawing.Point(0, 250);
@@ -118,7 +121,7 @@
             // labelAlert
             // 
             this.labelAlert.Dock = System.Windows.Forms.DockStyle.Top;
-            this.labelAlert.Location = new System.Drawing.Point(0, 26);
+            this.labelAlert.Location = new System.Drawing.Point(0, 31);
             this.labelAlert.Name = "labelAlert";
             this.labelAlert.Size = new System.Drawing.Size(536, 19);
             this.labelAlert.TabIndex = 5;
@@ -129,9 +132,9 @@
             this.panelClient.AutoScroll = true;
             this.panelClient.Controls.Add(this.pictureBox);
             this.panelClient.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelClient.Location = new System.Drawing.Point(0, 45);
+            this.panelClient.Location = new System.Drawing.Point(0, 50);
             this.panelClient.Name = "panelClient";
-            this.panelClient.Size = new System.Drawing.Size(536, 205);
+            this.panelClient.Size = new System.Drawing.Size(536, 200);
             this.panelClient.TabIndex = 6;
             // 
             // pictureBox
@@ -159,7 +162,7 @@
             this.Controls.Add(this.toolStrip);
             this.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "MainForm";
-			this.Text = "Voivode";
+            this.Text = "Voivode";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.toolStrip.ResumeLayout(false);

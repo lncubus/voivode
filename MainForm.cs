@@ -30,13 +30,13 @@ namespace voivode
 			new SortedDictionary<string, ToolStripButton>();
 		private Font textFont;
 		private Font figureFont;
-		private Font pawnFont;
+		//private Font pawnFont;
 
         private void MainForm_Load(object sender, EventArgs e)
         {
 			textFont = new Font (Font.FontFamily, Font.Size);
 			figureFont = new Font (Font.FontFamily, 2.2F*Font.Size);
-			pawnFont = new Font (Font.FontFamily, 1.7F*Font.Size);
+			//pawnFont = new Font (Font.FontFamily, 1.7F*Font.Size);
 			_map = new MapInfo("maps.ini");
 			CreateMapButtons();
 			if (!Login())
@@ -279,39 +279,61 @@ namespace voivode
 								break;	
 							}
 							Color c = pic.GetPixel ((int)(origin.X + sz.Width / 2), (int)(origin.Y + sz.Width / 2));
-                            if (f.IsDown)
+                            if (f.IsDown || f.IsCaptured)
                                 g.RotateTransform(90, MatrixOrder.Prepend);
                                 //sf.FormatFlags = StringFormatFlags.DirectionVertical;
                             g.TranslateTransform(origin.X + sz.Width / 2, origin.Y + sz.Width / 2, MatrixOrder.Append);
                             g.DrawString (piece,
-								piece != "♟" ? figureFont : pawnFont, 
-								c.GetBrightness () < 0.8 ? Brushes.Yellow : Brushes.Chocolate, 0, 0, sf);
+                                //piece != "♟" ? figureFont : pawnFont,
+                                figureFont,
+                                c.GetBrightness () < 0.7 ? Brushes.Yellow : Brushes.Brown, 0, 0, sf);
                             g.ResetTransform();
                             if (f.IsCaptured)
                             {
-                                var bars = new[]
+                                if (!string.IsNullOrEmpty(f.Captor))
                                 {
-                                     new RectangleF { X = 0.25F, Y = 0F, Width = 0.05F, Height = 1F },
-                                     //new RectangleF { X = 0.48F, Y = 0F, Width = 0.04F, Height = 1F },
-                                     new RectangleF { X = 0.70F, Y = 0F, Width = 0.05F, Height = 1F },
-                                     new RectangleF { X = 0F, Y = 0.25F, Width = 1F, Height = 0.05F },
-                                     //new RectangleF { X = 0F, Y = 0.48F, Width = 1F, Height = 0.04F },
-                                     new RectangleF { X = 0F, Y = 0.70F, Width = 1F, Height = 0.05F },
-                                };
-                                for(int b = 0; b < bars.Length; b++)
-                                {
-                                    var bar = bars[b];
-                                    bars[b] = new RectangleF
+                                    var tagSize = g.MeasureString(f.Captor, textFont);
+                                    tagSize.Width *= 1.1F;
+                                    tagSize.Height *= 1.1F;
+                                    var captorRect = new RectangleF
                                     {
-                                        X = labelRect.X + bar.X * labelRect.Width,
-                                        Y = labelRect.Y + bar.Y * labelRect.Height,
-                                        Width = bar.Width * labelRect.Width,
-                                        Height = bar.Height * labelRect.Height,
+                                        X = origin.X,
+                                        Y = origin.Y + sz.Height - tagSize.Height,
+                                        Width = tagSize.Width,
+                                        Height = tagSize.Height
                                     };
+                                    //labelRect.Y += sz.Height;
+                                    //labelRect.Height *= 0.5F;
+                                    g.FillRectangle(Brushes.Yellow, captorRect);
+                                    g.DrawRectangle(Pens.Black, (int)captorRect.Left, (int)captorRect.Top,
+                                        (int)captorRect.Width, (int)captorRect.Height);
+                                    g.DrawString(f.Captor, textFont, Brushes.Red, captorRect, sf);
                                 }
-                                g.FillRectangles(Brushes.Red, bars);
+                                else
+                                {
+                                    var bars = new[]
+                                    {
+                                         new RectangleF { X = 0.25F, Y = 0F, Width = 0.05F, Height = 1F },
+                                         //new RectangleF { X = 0.48F, Y = 0F, Width = 0.04F, Height = 1F },
+                                         new RectangleF { X = 0.70F, Y = 0F, Width = 0.05F, Height = 1F },
+                                         new RectangleF { X = 0F, Y = 0.25F, Width = 1F, Height = 0.05F },
+                                         //new RectangleF { X = 0F, Y = 0.48F, Width = 1F, Height = 0.04F },
+                                         new RectangleF { X = 0F, Y = 0.70F, Width = 1F, Height = 0.05F },
+                                    };
+                                    for (int b = 0; b < bars.Length; b++)
+                                    {
+                                        var bar = bars[b];
+                                        bars[b] = new RectangleF
+                                        {
+                                            X = labelRect.X + bar.X * labelRect.Width,
+                                            Y = labelRect.Y + bar.Y * labelRect.Height,
+                                            Width = bar.Width * labelRect.Width,
+                                            Height = bar.Height * labelRect.Height,
+                                        };
+                                    }
+                                    g.FillRectangles(Brushes.Red, bars);
+                                }
                             }
-                            //sf.FormatFlags = 0;
                         }
 						if (!string.IsNullOrEmpty (f.Number))
 						{
