@@ -22,21 +22,19 @@ namespace voivode
 		public const string LoginContainer = "loginContainer";
         public const string WhereAreYouLink = "strategy/pp/pp.php?p=15";
 
-        private readonly Web _browser = new Web { Agent = UserAgent.Firefox };
+        private readonly Web _browser = new Web { Agent = UserAgent.Chrome };
         private readonly CookieContainer _cookies = new CookieContainer();
         private readonly Model _model = new Model();
 		private MapInfo _map;
 		private readonly IDictionary<string, ToolStripButton> _buttons =
 			new SortedDictionary<string, ToolStripButton>();
 		private Font textFont;
-		private Font figureFont;
-		//private Font pawnFont;
+		private Font bigFont;
 
         private void MainForm_Load(object sender, EventArgs e)
         {
 			textFont = new Font (Font.FontFamily, Font.Size);
-			figureFont = new Font (Font.FontFamily, 2.2F*Font.Size);
-			//pawnFont = new Font (Font.FontFamily, 1.7F*Font.Size);
+			bigFont = new Font (Font.FontFamily, 2.0F*Font.Size);
 			_map = new MapInfo("maps.ini");
 			CreateMapButtons();
 			if (!Login())
@@ -115,7 +113,7 @@ namespace voivode
             toolStripStatusLabel.Text = _model.Title;
             labelAlert.AutoSize = true;
             labelAlert.ForeColor = Color.Firebrick;
-            labelAlert.Font = figureFont;
+            labelAlert.Font = bigFont;
 			string alert = Model.Alert(response);
 			labelAlert.Visible = !string.IsNullOrEmpty(alert);
 			labelAlert.Text = alert ?? string.Empty;
@@ -203,8 +201,6 @@ namespace voivode
 					Alignment = StringAlignment.Center,
 					LineAlignment = StringAlignment.Center,
 				};
-				SizeF sz = g.MeasureString ("W", figureFont);
-			    sz.Width = sz.Height;
 				foreach (var pair in city.regions)
 				{
 					string region = pair.Key;
@@ -212,8 +208,12 @@ namespace voivode
 					List<Figure> figures;
 					if (!_model.Regions.TryGetValue(region, out figures))
 						continue;
-					PointF origin = rect.Location;
-					foreach (Figure f in figures)
+                    SizeF sz = g.MeasureString("W", bigFont);
+                    sz.Width = sz.Height;
+                    PointF origin = rect.Location;
+                    int w = (int)(rect.Width / sz.Width);
+                    int h = (int)(rect.Height / sz.Height);
+                    foreach (Figure f in figures)
 					{
 						origin.X += sz.Width * 0.1F;
 						RectangleF labelRect = new RectangleF {
@@ -278,14 +278,20 @@ namespace voivode
 								piece = "?";
 								break;	
 							}
-							Color c = pic.GetPixel ((int)(origin.X + sz.Width / 2), (int)(origin.Y + sz.Width / 2));
+                            int x = (int)(origin.X + sz.Width / 2);
+                            int y = (int)(origin.Y + sz.Width / 2);
+                            if (x >= pic.Width)
+                                x = pic.Width - 1;
+                            if (y >= pic.Height)
+                                y = pic.Height - 1;
+                            Color c = pic.GetPixel (x, y);
                             if (f.IsDown || f.IsCaptured)
                                 g.RotateTransform(90, MatrixOrder.Prepend);
                                 //sf.FormatFlags = StringFormatFlags.DirectionVertical;
                             g.TranslateTransform(origin.X + sz.Width / 2, origin.Y + sz.Width / 2, MatrixOrder.Append);
                             g.DrawString (piece,
                                 //piece != "♟" ? figureFont : pawnFont,
-                                figureFont,
+                                bigFont,
                                 c.GetBrightness () < 0.7 ? Brushes.Yellow : Brushes.Brown, 0, 0, sf);
                             g.ResetTransform();
                             if (f.IsCaptured)

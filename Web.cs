@@ -65,6 +65,21 @@ namespace voivode
             "ru-RU",
             AcceptCharset = null
         };
+
+        public static readonly UserAgent Chrome = new UserAgent
+        {
+            Agent =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+            Accept =
+            "text/html,application/xhtml+xml,application/xml; q=0.9,image/webp,image/apng,*/*;q=0.8",
+            AcceptLanguage =
+            "en-US,en;q=0.9,ru;q=0.8,cs;q=0.7",
+            AcceptCharset = null
+            //Accept-Encoding: gzip, deflate
+            //Connection: keep-alive
+            //Host: st.wodserial.ru
+            //Upgrade-Insecure-Requests: 1
+        };
     };
 
     public class ProxyDef
